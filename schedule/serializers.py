@@ -1,4 +1,4 @@
-from models import Teacher,Room, CourseRequirement, ScheduleEntry
+from .models import Teacher,Room, CourseRequirement
 from rest_framework import serializers 
 
 class TeacherSerializer(serializers.ModelSerializer):
@@ -16,7 +16,3 @@ class CourseSerializer(serializers.ModelSerializer):
           model = CourseRequirement
           fields = '__all__'
           
-class ScheduleSerializer(serializers.ModelSerializer):
-     class Meta: 
-          model = ScheduleEntry
-          fields= '__all__'

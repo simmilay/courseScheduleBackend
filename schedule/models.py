@@ -5,7 +5,7 @@ from django.db import models
 
 class Teacher(models.Model):
     name = models.CharField(max_length=100)
-    course = models.CharField(max_length=100)
+    course = models.JSONField(default=list)
     off_day = models.CharField(max_length=100)
     
     def __str__(self):
@@ -27,12 +27,3 @@ class CourseRequirement(models.Model):
     def __str__(self):
          return f"{self.classroom} - {self.weekly_hours} - {self.course}"
 
-
-class ScheduleEntry(models.Model):
-    classroom = models.CharField(max_length=100)
-    course = models.CharField(max_length=100)
-    teacher = models.CharField(max_length=100)
-    room = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.classroom} - {self.course} - {self.teacher} - {self.room}"

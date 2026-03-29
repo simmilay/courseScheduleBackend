@@ -87,6 +87,14 @@ def find_free_room(rooms, schedule, day, hour, room_type):
     return None
 
 
+def check_teacher_assignment(schedule, day, hour, classroom, course, teacher):
+    for entry in schedule[day][hour]:
+        if entry.classroom == classroom and entry.course == course and entry.teacher != teacher:
+            return False
+
+    return True
+
+
 def can_place(schedule, day, hour, req, teacher, rooms):
     if is_teacher_off_day(teacher.off_day, day):
         return None
@@ -95,6 +103,9 @@ def can_place(schedule, day, hour, req, teacher, rooms):
         return None
 
     if not classroom_available(req.classroom, schedule, day, hour):
+        return None
+
+    if not check_teacher_assignment(schedule, day, hour, req.classroom, req.course, teacher.name):
         return None
 
     room_type = "lab" if is_lab_course(req.course) else "normal"
@@ -108,9 +119,8 @@ def can_place(schedule, day, hour, req, teacher, rooms):
 
 def solve(teachers, reqs, rooms, max_solutions=5):
     solutions = []
-
-    for attempt in range(max_solutions * 3):
-        rng = random.Random(attempt)
+    for attempt in range(max_solutions*10):
+        rng = random.Random()
         schedule = empty_schedule()
         soft_violations = 0
         hard_violations = 0
@@ -142,10 +152,6 @@ def solve(teachers, reqs, rooms, max_solutions=5):
                     if placed >= req.weekly_hours:
                         break
 
-                    daily_count = daily_course_count(
-                        schedule, day, req.classroom, req.course)
-                    if daily_count >= 4:
-                        continue
                     room = can_place(schedule, day, hour, req, teacher, rooms)
                     if room is not None:
                         schedule[day][hour].append(
@@ -153,20 +159,18 @@ def solve(teachers, reqs, rooms, max_solutions=5):
                                           teacher.name, room.name)
                         )
 
-                        cons_count = consecutive_count(
-                            schedule, day, hour, req.classroom, req.course)
-                        if cons_count >= 4:  
-                            soft_violations += 1
                         placed += 1
-                        
-                        if has_Gap_in_day(schedule, day, req.classroom, req.course)  is not True:
-                            soft_violations += 1
 
             if placed < req.weekly_hours:
                 missing.append(
                     f"{req.classroom} - {req.course}: {placed}/{req.weekly_hours} saat yerleştirilebildi"
                 )
                 hard_violations += (req.weekly_hours - placed)
+            for day in DAYS:
+                if daily_course_count(schedule, day, req.classroom, req.course) > 4:
+                    soft_violations += 1
+                if has_gap_in_day(schedule, day, req.classroom, req.course):
+                    soft_violations += 2
 
         is_complete = len(missing) == 0 and hard_violations == 0
         if is_complete:
@@ -188,18 +192,6 @@ def solve(teachers, reqs, rooms, max_solutions=5):
     return solutions[:max_solutions]
 
 
-def consecutive_count(schedule, day, hour, classroom, course):
-    consecutive_count = 0
-    for h in range(hour - 1, 0, -1):
-        found = any(entry.classroom == classroom and entry.course == course
-                    for entry in schedule[day][h])
-        if found:
-            consecutive_count += 1
-        else:
-            break
-    return consecutive_count
-
-
 def daily_course_count(schedule, day, classroom, course):
     count = 0
     for hour in range(1, HOURS_PER_DAY + 1):
@@ -209,7 +201,8 @@ def daily_course_count(schedule, day, classroom, course):
             count += 1
     return count
 
-def has_Gap_in_day(schedule, day, classroom, course):
+
+def has_gap_in_day(schedule, day, classroom, course):
     count = 0
     this_lesson = []
     for hour in range(1, HOURS_PER_DAY + 1):
@@ -218,12 +211,8 @@ def has_Gap_in_day(schedule, day, classroom, course):
         if found:
             this_lesson.append(hour)
     this_lesson.sort()
-    
+
     for i in range(1, len(this_lesson)):
         if this_lesson[i] - this_lesson[i-1] > 1:
-            count += 1
-    
-    if count > 0:
-        return True
-    else:
-        return False
+            return True
+    return False

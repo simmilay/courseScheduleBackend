@@ -2,37 +2,39 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .algorithm import TeacherData, RoomData, CourseRequirement, solve
+from rest_framework.viewsets import ModelViewSet
+from .algorithm import TeacherData, RoomData, CourseRequirement as AlgoCourseReq, solve
+from .models import Teacher, Room, CourseRequirement
+from .serializers import TeacherSerializer, RoomSerializer, CourseSerializer
 
 # Create your views here.
 
 
 class ScheduleView(APIView):
     def post(self, request):
-        data = request.data
 
         teachers = [
             TeacherData(
-                name=t['name'],
-                course=t['course'],
-                off_day=t['off_day'])
-            for t in data['teachers']]
+                name=t.name,
+                course=t.course,
+                off_day=t.off_day)
+            for t in Teacher.objects.all()]
 
         rooms = [
             RoomData(
-                name=r['name'],
-                room_type=r['room_type']
+                name=r.name,
+                room_type=r.room_type
             )
-            for r in data['rooms']
+            for r in Room.objects.all()
         ]
 
         requirement = [
-            CourseRequirement(
-                classroom=cr['classroom'],
-                weekly_hours=cr['weekly_hours'],
-                course=cr['course']
+            AlgoCourseReq(
+                classroom=cr.classroom,
+                weekly_hours=cr.weekly_hours,
+                course=cr.course
             )
-            for cr in data['requirements']
+            for cr in CourseRequirement.objects.all()
         ]
 
         solutions = solve(
@@ -64,3 +66,18 @@ class ScheduleView(APIView):
             })
 
         return Response(output, status=status.HTTP_200_OK)
+
+
+class TeacherView(ModelViewSet):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
+
+
+class RoomView(ModelViewSet):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
+
+class CourseView(ModelViewSet):
+    queryset = CourseRequirement.objects.all()
+    serializer_class = CourseSerializer
