@@ -120,7 +120,7 @@ def can_place(schedule, day, hour, req, teacher, rooms):
 def solve(teachers, reqs, rooms, max_solutions=5):
     solutions = []
     count = 0
-    while count <=  5:
+    while count <= max_solutions:
         rng = random.Random()
         schedule = empty_schedule()
         soft_violations = 0
