@@ -6,6 +6,10 @@ class TeacherSerializer(serializers.ModelSerializer):
           model = Teacher
           fields= '__all__'
           
+          validators = [
+               
+          ]
+          
 class RoomSerializer(serializers.ModelSerializer):
      class Meta:
           model = Room

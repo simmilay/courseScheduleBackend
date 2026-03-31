@@ -18,14 +18,14 @@ class ScheduleView(APIView):
                 name=t.name,
                 course=t.course,
                 off_day=t.off_day)
-            for t in Teacher.objects.all()]
+            for t in Teacher.objects.filter(is_active=True)]
 
         rooms = [
             RoomData(
                 name=r.name,
                 room_type=r.room_type
             )
-            for r in Room.objects.all()
+            for r in Room.objects.filter(is_active=True)
         ]
 
         requirement = [
@@ -34,7 +34,7 @@ class ScheduleView(APIView):
                 weekly_hours=cr.weekly_hours,
                 course=cr.course
             )
-            for cr in CourseRequirement.objects.all()
+            for cr in CourseRequirement.objects.filter(is_active=True)
         ]
 
         solutions = solve(
@@ -69,15 +69,16 @@ class ScheduleView(APIView):
 
 
 class TeacherView(ModelViewSet):
-    queryset = Teacher.objects.all()
+    queryset = Teacher.objects.filter(is_active=True)
     serializer_class = TeacherSerializer
 
 
 class RoomView(ModelViewSet):
-    queryset = Room.objects.all()
+    queryset = Room.objects.filter(is_active=True)
     serializer_class = RoomSerializer
 
 
 class CourseView(ModelViewSet):
-    queryset = CourseRequirement.objects.all()
+    queryset = CourseRequirement.objects.filter(is_active=True)
     serializer_class = CourseSerializer
+    

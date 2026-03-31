@@ -119,7 +119,8 @@ def can_place(schedule, day, hour, req, teacher, rooms):
 
 def solve(teachers, reqs, rooms, max_solutions=5):
     solutions = []
-    for attempt in range(max_solutions*10):
+    count = 0
+    while count <=  5:
         rng = random.Random()
         schedule = empty_schedule()
         soft_violations = 0
@@ -178,6 +179,8 @@ def solve(teachers, reqs, rooms, max_solutions=5):
         else:
             fitness = 100 - (hard_violations * 10) - (soft_violations * 3)
         fitness = max(0, fitness)
+        if fitness >= 80:
+            count += 1
 
         solutions.append({
             'schedule': schedule,
