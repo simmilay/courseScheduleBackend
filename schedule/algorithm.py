@@ -179,7 +179,7 @@ def solve(teachers, reqs, rooms, max_solutions=5):
         else:
             fitness = 100 - (hard_violations * 10) - (soft_violations * 3)
         fitness = max(0, fitness)
-        if fitness >= 80:
+        if fitness >=70:
             count += 1
 
         solutions.append({

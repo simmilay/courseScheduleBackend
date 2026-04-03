@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from .algorithm import TeacherData, RoomData, CourseRequirement as AlgoCourseReq, solve
-from .models import Teacher, Room, CourseRequirement
-from .serializers import TeacherSerializer, RoomSerializer, CourseSerializer
+from .models import Teacher, Room, CourseRequirement, ScheduleEntry
+from .serializers import TeacherSerializer, RoomSerializer, CourseSerializer, ScheduleSerializer
 
 # Create your views here.
 
@@ -81,4 +81,8 @@ class RoomView(ModelViewSet):
 class CourseView(ModelViewSet):
     queryset = CourseRequirement.objects.filter(is_active=True)
     serializer_class = CourseSerializer
+    
+class ScheduleEntryView(ModelViewSet):
+    queryset = ScheduleEntry.objects.filter(is_active=True)
+    serializer_class = ScheduleSerializer
     
