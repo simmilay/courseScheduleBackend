@@ -1,13 +1,15 @@
 from django.urls import path, include
 from .views import ScheduleView
-from .views import TeacherView, RoomView, CourseView, ScheduleEntryView
+from .views import TeacherView, RoomView, CourseView, ScheduleEntryView, RequirementView, ClassroomView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register('teachers', TeacherView)
 router.register('rooms', RoomView)
-router.register('requirements', CourseView)
+router.register('courses', CourseView)
+router.register('requirements', RequirementView)
 router.register('schedule', ScheduleEntryView)
+router.register('classrooms', ClassroomView)
 
 urlpatterns = [
     path('', include(router.urls)),
