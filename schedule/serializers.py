@@ -4,14 +4,16 @@ from rest_framework import serializers
 
 class TeacherSerializer(serializers.ModelSerializer):
     course_names = serializers.SerializerMethodField()
-    
 
     class Meta:
         model = Teacher
         fields = '__all__'
-        
+
     def get_course_names(self, obj):
         return list(obj.course.values_list('name', flat=True))
+
+
+
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,12 +40,14 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     allowed_rooms_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Course
         fields = '__all__'
-        
+
     def get_allowed_rooms_name(self, obj):
         return list(obj.allowed_rooms.values_list('name', flat=True))
+
 
 class ClassroomSerializer(serializers.ModelSerializer):
     class Meta:

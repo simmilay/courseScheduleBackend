@@ -9,11 +9,11 @@ DAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma']
 HOURS_PER_DAY = 8
 
 OFF_DAY_MAP = {
-    'Pazartesi': 'Pazartesi',
-    'Sali': 'Salı',
-    'Carsamba': 'Çarşamba',
-    'Persembe': 'Perşembe',
-    'Cuma': 'Cuma',
+    '1': 'Pazartesi',
+    '2': 'Salı',
+    '3': 'Çarşamba',
+    '4': 'Perşembe',
+    '5': 'Cuma',
 }
 
 
@@ -327,9 +327,9 @@ def find_optimal(requirements):
     status = solver.solve(model)
     print(f"Optimal status: {solver.status_name(status)}")
 
-
-
-    return int(solver.objective_value)
+    if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        return int(solver.objective_value)
+    return None
 
 
 def solve():
@@ -350,7 +350,11 @@ def solve():
     penalties = add_penalty(model, x, requirements)
     total = model.new_int_var(0, 100000, 'total2')
     model.add(total == sum(penalties))
-    model.add(total <= optimal + 0  )
+
+    if optimal is not None:
+        slack = max(5, int(optimal * 0.1))
+        model.add(total <= optimal + slack)
+        print(f"Slack ile üst sınır: {optimal + slack}")
 
     callback = ScheduleCallback(x, requirements)
     solver.parameters.num_search_workers = 1

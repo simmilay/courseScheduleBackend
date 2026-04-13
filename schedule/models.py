@@ -6,11 +6,11 @@ from core.models import BaseModel
 
 class Teacher(BaseModel):
     class OffDay(models.TextChoices):
-        PAZARTESI = 'Pazartesi', 'Pazartesi'
-        SALI = 'Sali', 'Salı'
-        CARSAMBA = 'Carsamba', 'Çarşamba'
-        PERSEMBE = 'Persembe', 'Perşembe'
-        CUMA = 'Cuma', 'Cuma'
+        PAZARTESI = '1', 'Pazartesi'
+        SALI = '2', 'Salı'
+        CARSAMBA = '3', 'Çarşamba'
+        PERSEMBE = '4', 'Perşembe'
+        CUMA = '5', 'Cuma'
     name = models.CharField(max_length=100)
     course = models.ManyToManyField("schedule.Course")
     off_day = models.CharField(max_length=100, choices=OffDay.choices)
@@ -24,7 +24,7 @@ class Room(BaseModel):
         NORMAL = 'Normal', 'normal'
         LAB = 'Laboratuvar', 'lab'
     name = models.CharField(max_length=100)
-    room_type = models.CharField(max_length=100)
+    room_type = models.CharField(max_length=100 ,)
 
     def __str__(self):
         return f"{self.name} - {self.room_type}"
