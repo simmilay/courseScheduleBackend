@@ -21,7 +21,7 @@ class ScheduleView(APIView):
 
 
 class TeacherView(ModelViewSet):
-    queryset = Teacher.objects.filter(is_active=True)
+    queryset = Teacher.objects.filter(is_active=True).order_by('name')
     serializer_class = TeacherSerializer
 
     def create(self, request, *args, **kwargs):
@@ -39,7 +39,7 @@ class TeacherView(ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='off-day-choices')
-    def off_day_choices(self,request):
+    def off_day_choices(self, request):
         return Response({
             'off_days': [
                 {'value': value, 'title': title}
@@ -49,7 +49,7 @@ class TeacherView(ModelViewSet):
 
 
 class RoomView(ModelViewSet):
-    queryset = Room.objects.filter(is_active=True)
+    queryset = Room.objects.filter(is_active=True).order_by('room_type', 'name')
     serializer_class = RoomSerializer
 
     def create(self, request, *args, **kwargs):
@@ -68,7 +68,7 @@ class RoomView(ModelViewSet):
 
 
 class CourseView(ModelViewSet):
-    queryset = Course.objects.filter(is_active=True)
+    queryset = Course.objects.filter(is_active=True).order_by('name')
     serializer_class = CourseSerializer
 
     def create(self, request, *args, **kwargs):
@@ -80,7 +80,8 @@ class CourseView(ModelViewSet):
 
 
 class RequirementView(ModelViewSet):
-    queryset = CourseRequirement.objects.filter(is_active=True)
+    queryset = CourseRequirement.objects.filter(
+        is_active=True).order_by('classroom__name')
     serializer_class = RequirementsSerializer
 
     def create(self, request, *args, **kwargs):
@@ -97,7 +98,7 @@ class ScheduleEntryView(ModelViewSet):
 
 
 class ClassroomView(ModelViewSet):
-    queryset = Classroom.objects.filter(is_active=True)
+    queryset = Classroom.objects.filter(is_active=True).order_by('name')
     serializer_class = ClassroomSerializer
 
     def create(self, request, *args, **kwargs):
@@ -106,5 +107,3 @@ class ClassroomView(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-   

@@ -13,7 +13,7 @@ class Teacher(BaseModel):
         CUMA = '5', 'Cuma'
     name = models.CharField(max_length=100)
     course = models.ManyToManyField("schedule.Course")
-    off_day = models.CharField(max_length=100, choices=OffDay.choices)
+    off_day = models.CharField(max_length=100, choices=OffDay.choices, null=True)
 
     def __str__(self):
         return f"{self.name} - {self.course} - {self.off_day}"

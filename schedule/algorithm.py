@@ -232,21 +232,21 @@ def add_penalty(model, x, requirements):
                     excess, [daily_count - 4, 0])
                 penalties.append(excess)
                 
-    # boş gün olmasın
-    for classroom in requirements.keys():
-        for day in DAYS:
-            daily_total = sum(
-                x[(classroom, course, teacher, room, day, hour)]
-                for _, reqs in requirements.items()
-                if _ == classroom
-                for (course, teacher, rooms, _) in reqs
-                for room in rooms
-                for hour in range(1, HOURS_PER_DAY+1)
-            )
-            is_empty = model.new_bool_var(f'is_empty_{classroom}_{day}')
-            model.add(daily_total == 0).only_enforce_if(is_empty)
-            model.add(daily_total > 0).only_enforce_if(is_empty.Not())
-            penalties.append(is_empty)
+    # # boş gün olmasın
+    # for classroom in requirements.keys():
+    #     for day in DAYS:
+    #         daily_total = sum(
+    #             x[(classroom, course, teacher, room, day, hour)]
+    #             for _, reqs in requirements.items()
+    #             if _ == classroom
+    #             for (course, teacher, rooms, _) in reqs
+    #             for room in rooms
+    #             for hour in range(1, HOURS_PER_DAY+1)
+    #         )
+    #         is_empty = model.new_bool_var(f'is_empty_{classroom}_{day}')
+    #         model.add(daily_total == 0).only_enforce_if(is_empty)
+    #         model.add(daily_total > 0).only_enforce_if(is_empty.Not())
+    #         penalties.append(is_empty)
             
     #gap kontrolü         
     for classroom, reqs in requirements.items():
@@ -359,7 +359,7 @@ def solve():
     callback = ScheduleCallback(x, requirements)
     solver.parameters.num_search_workers = 1
     solver.parameters.enumerate_all_solutions = True
-    solver.parameters.max_time_in_seconds = 60.0
+    solver.parameters.max_time_in_seconds = 120.0
 
     solver.solve(model, callback)
 
