@@ -16,7 +16,7 @@ class ScheduleView(APIView):
 
         solved_schedule = solve()
         if solved_schedule is None:
-            return Response({'message': 'No schedule found'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Program oluşturulamadı'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(solved_schedule, status=status.HTTP_200_OK)
 
 
@@ -95,6 +95,7 @@ class RequirementView(ModelViewSet):
 class ScheduleEntryView(ModelViewSet):
     queryset = ScheduleEntry.objects.filter(is_active=True)
     serializer_class = ScheduleSerializer
+    pagination_class = None
 
 
 class ClassroomView(ModelViewSet):

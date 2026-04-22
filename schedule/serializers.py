@@ -22,7 +22,6 @@ class RoomSerializer(serializers.ModelSerializer):
 
 
 class RequirementsSerializer(serializers.ModelSerializer):
-    teacher_name = serializers.CharField(source='teacher.name', read_only=True)
     classroom_name = serializers.CharField(
         source='classroom.name', read_only=True)
     course_name = serializers.CharField(source='course.name', read_only=True)

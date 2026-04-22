@@ -42,8 +42,7 @@ class Course(BaseModel):
 class CourseRequirement(BaseModel):
     classroom = models.ForeignKey(
         "schedule.Classroom", on_delete=models.CASCADE, null=True)
-    teacher = models.ForeignKey(
-        "schedule.Teacher", on_delete=models.CASCADE, null=True)
+    
     course = models.ForeignKey("schedule.Course", on_delete=models.CASCADE)
     weekly_hours = models.IntegerField()
 
